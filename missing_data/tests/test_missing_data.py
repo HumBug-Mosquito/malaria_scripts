@@ -7,7 +7,7 @@ sys.path.insert(0,parentdir)
 
 import unittest
 import numpy as np
-from missing_data import find_pixel_neighbourhood, neighbourhood_average 
+from missing_data import find_pixel_neighbourhood, pixel_average 
 from missing_data import missing_coordinates, replace_missing_values
 from missing_data import missing_ratio
 
@@ -44,9 +44,10 @@ class TestMissingCoordinates(unittest.TestCase):
 class TestMissingDataNeighbourhoods(unittest.TestCase):
 
 	def assert_dict_values_of_numpys_equal(self, dict1, dict2):
-		"""compares the set of numpy arrays forming the values 
-		in two dictionaries are the same (ignores dictionary keys)"""
-		np.testing.assert_array_equal(dict1.values(), dict2.values())
+		"""checks that the set of numpy arrays forming the values 
+		in two dictionaries are the same ASSUMING THEY HAVE THE SAME KEYS"""
+		for key in dict1.keys():
+			np.testing.assert_array_equal(dict1[key], dict2[key])
 
 	def test_find_pixel_neighbourhood_interior(self):
 		"""check neighbourhood for pixels not on boundary"""
@@ -119,7 +120,7 @@ class TestMissingDataNeighbourhoods(unittest.TestCase):
 
 class TestDataAveraging(unittest.TestCase):
 
-	def test_complete_neighbourhood_average(self):
+	def test_complete_pixel_average(self):
 		"""check neighbourhood average is correct when no neighbours contain 
 		missing data."""
 		data = np.array([[3,4,5],
@@ -133,10 +134,10 @@ class TestDataAveraging(unittest.TestCase):
 			'down_nbor': np.array([1, 1])
 		}
 		expected_average = int(5.5) # All values must be integers
-		average = neighbourhood_average(pixel_loc, neighbours, data)
+		average = pixel_average(pixel_loc, neighbours, data)
 		self.assertEqual(expected_average, average)
 
-	def test_partial_neighbourhood_average(self):
+	def test_partial_pixel_average(self):
 		"""check neighbourhood average is correct when some neighbours contain 
 		missing data."""
 		data = np.array([[3,4,5],
@@ -150,7 +151,41 @@ class TestDataAveraging(unittest.TestCase):
 			'down_nbor': np.array([1, 1])
 		}
 		expected_average = 4
-		average = neighbourhood_average(pixel_loc, neighbours, data)
+		average = pixel_average(pixel_loc, neighbours, data)
+		self.assertEqual(expected_average, average)
+
+	def test_partial_pixel_average(self):
+		"""check neighbourhood average is correct when some neighbours contain 
+		missing data."""
+		data = np.array([[3,4,5],
+					     [4,-999,-999],
+					     [2,-999,5]])
+		pixel_loc = np.array([1,1])
+		neighbours = {
+			'left_nbor': np.array([0, 1]),
+			'right_nbor': np.array([2, 1]),
+			'up_nbor': np.array([1, 0]),
+			'down_nbor': np.array([1, 1])
+		}
+		expected_average = 4
+		average = pixel_average(pixel_loc, neighbours, data)
+		self.assertEqual(expected_average, average)
+
+	def test_land_average(self):
+		"""check land average is correct when all neighbours contain 
+		missing data."""
+		data = np.array([[1,-999,1],
+					     [-999,-999,-999],
+					     [1,-999,1]])
+		pixel_loc = np.array([1,1])
+		neighbours = {
+			'left_nbor': np.array([0, 1]),
+			'right_nbor': np.array([2, 1]),
+			'up_nbor': np.array([1, 0]),
+			'down_nbor': np.array([1, 1])
+		}
+		expected_average = 1
+		average = pixel_average(pixel_loc, neighbours, data)
 		self.assertEqual(expected_average, average)
 
 class TestDataReplacement(unittest.TestCase):
@@ -178,6 +213,7 @@ class TestDataReplacement(unittest.TestCase):
 					     		  [2,3,5]])
 		data = replace_missing_values(missing_data)
 		np.testing.assert_array_equal(expected_data, data)
+
 		
 if __name__ == "__main__":
 	unittest.main()

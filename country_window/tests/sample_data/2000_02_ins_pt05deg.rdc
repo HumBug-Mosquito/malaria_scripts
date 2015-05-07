@@ -1,0 +1,29 @@
+file format : IDRISI Raster A.1
+file title  : February 2000 percent clear sky .05-degree
+data type   : integer
+file type   : binary
+columns     : 7200
+rows        : 3000
+ref. system : latlong
+ref. units  : deg
+unit dist.  : 1.0
+min. X      : -180
+max. X      : 180
+min. Y      : -60
+max. Y      : 90
+pos'n error : unknown
+resolution  : .05
+min. value  : -9999
+max. value  : 10000
+display min : 0
+display max : 10000
+value units : DN/100 = % clear
+value error : unknown
+flag value  : -999
+flag def'n  : background
+legend cats : 0
+lineage     : derived from MOD35_L2 Cloud Mask SDS bits 1-2: 10 & 11
+lineage     : converted from swath to geographic with HEG Tool 2.12
+lineage     : mean-composited to global, mean-aggregated from 1km, 
+lineage     : and exported from Arc grid to .bil in ArcGIS 10.2
+lineage     : -999 = no data, -9999 = sea
