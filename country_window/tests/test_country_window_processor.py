@@ -9,7 +9,7 @@ import unittest
 import gdal
 import numpy as np
 from country_window_processor import import_rst_files, get_geotransform 
-from country_window_processor import pixel_coordinates, read_pixel_arrays
+from country_window_processor import pixel_coordinates
 
 def assert_dict_value_type_equal(dict1, dict2):
 	"""returns true if sample values from each dictionary

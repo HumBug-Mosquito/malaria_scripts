@@ -34,6 +34,30 @@ def import_rst_files(path=IMPORT_PATH):
 		sleep(0.1)
 	return dataset
 
+def import_tiff_files(path=IMPORT_PATH):
+	"""Assumes filenames take the form 'NAME_YYYY.rst' 
+	where NAME can be any value. Returns a dictionary 
+	using dates as keys with gdal object values."""
+	dataset = {}
+	fnames = next(os.walk(path))[2]
+	fnames = [fname for fname in fnames if fname[-4:] == ".tif"]
+	for fname in fnames:
+		dataset[fname[-8:-4]] = gdal.Open(path + fname)
+		sleep(0.1)
+	return dataset
+
+def import_bil_files(path=IMPORT_PATH):
+	"""Assumes filenames take the form 'NAMEYYag.bil' 
+	where NAME can be any value. Returns a dictionary 
+	using dates as keys with gdal object values."""
+	dataset = {}
+	fnames = next(os.walk(path))[2]
+	fnames = [fname for fname in fnames if fname[-4:] == ".bil"]
+	for fname in fnames:
+		dataset[fname[5:7]] = gdal.Open(path + fname)
+		sleep(0.1)
+	return dataset
+
 def get_geotransform(dataset):
 	"""returns a tuple containing the geo matrix for
 	the raster data."""
