@@ -30,12 +30,12 @@ def scott(data):
 	bandwidth on the given data."""
 	dim = data.shape[1]
 	num_points = data.shape[0]
-	scott_factor = num_points ** ( - 2 / (dim + 4))
+	scott_factor = num_points ** ( - 1 / (dim + 4))
 	return scott_factor
 
 def silverman(data):
 	"""returns silverman rule of thumb value for the optimal
 	bandwidth on the given data."""
 	dim = data.shape[1]
-	silverman_factor = scott(data) * ( 4 / (dim + 2)) ** (2 / (dim + 4))
+	silverman_factor = scott(data) * ( 4 / (dim + 2)) ** (-1 / (dim + 4))
 	return silverman_factor

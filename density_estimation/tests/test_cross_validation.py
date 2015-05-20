@@ -7,8 +7,7 @@ sys.path.insert(0,parentdir)
 
 import unittest
 import numpy as np
-from cross_validation import split_into_folds
-from cross_validation import fold_combinations, k_folds
+from cross_validation import k_folds
 
 def sample_fold(scalar, rows, cols):
 	"""returns numpy array of dimension rows x cols
