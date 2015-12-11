@@ -35,7 +35,7 @@ def import_rst_files(path=IMPORT_PATH):
 	return dataset
 
 def import_tiff_files(path=IMPORT_PATH):
-	"""Assumes filenames take the form 'NAME_YYYY.rst' 
+	"""Assumes filenames take the form 'NAME_YYYY.tif' 
 	where NAME can be any value. Returns a dictionary 
 	using dates as keys with gdal object values."""
 	dataset = {}
