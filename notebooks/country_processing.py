@@ -13,9 +13,9 @@ COL_INFO = 'blue'
 COL_ERR  = 'red'
 COL_SUCC = 'green'
 
-sys.path = ['..'] + sys.path
-import country_window as cwp
-from time import sleep
+#sys.path = ['..'] + sys.path
+#import country_window as cwp
+#from time import sleep
 
 from scipy.io import savemat
 
