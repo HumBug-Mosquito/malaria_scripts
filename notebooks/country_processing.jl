@@ -6,7 +6,7 @@ using HDF5
 using MAT
 
 ROOT = "/Volumes/DATA/Datasets/GeoData/"
-FORMAT = (7200,3000)
+FORMAT = (7200, 3000)
 
 # Define a bounding box for each country (in degrees of lat/lon):
 
@@ -60,6 +60,12 @@ end
 
 for datum in ["aet_pet"] #["evi", "temp", "ins"] # "aet_pet"
     
+    if datum == "aet_pet"
+        reshape_format = (FORMAT[2], FORMAT[1])
+    else
+        reshape_format = FORMAT
+    end
+    
     print_with_color(:blue, datum*"\n")
     
     for country in ["kenya"]
@@ -73,9 +79,12 @@ for datum in ["aet_pet"] #["evi", "temp", "ins"] # "aet_pet"
         #EXPORT_PATH = "%s/%s/%s" % (ROOT, datum, country)
         EXPORT_PATH = "/Volumes/DATA/Datasets/Geography_Data/viz2/$country/$datum"
         mkpath(EXPORT_PATH)
+        hd5_filename = "$EXPORT_PATH/$datum.md5"
+        mat_filename = "$EXPORT_PATH/$datum.mat"
         left, right, top, bottom = convert_bbox(BBOX[country], FORMAT)
         
-        close(h5open("$EXPORT_PATH.h5", "w"))
+        println("Exporting to $EXPORT_PATH")
+        close(h5open(hd5_filename, "w"))
         
         months_data = Dict()
         for file_ in readdir(IMPORT_PATH)
@@ -87,7 +96,12 @@ for datum in ["aet_pet"] #["evi", "temp", "ins"] # "aet_pet"
             println("  processing ", file_)
             month = "d"*replace(basename(file_)[1:7], "_", "")
             
-            data = reshape(readdlm(joinpath(IMPORT_PATH, file_)), FORMAT)
+            data = reshape(readdlm(joinpath(IMPORT_PATH, file_)), reshape_format)
+            
+            if datum == "aet_pet"
+                data = data'
+            end
+            
             #month_data = rotl90(data[ left:right, top:bottom])
             month_data = data[ left:right, top:bottom]'
             months_data[month] = month_data
@@ -96,7 +110,7 @@ for datum in ["aet_pet"] #["evi", "temp", "ins"] # "aet_pet"
                 write(file, month, month_data)  # alternatively, say "@write file A"
             end
 
-            file = matopen("$EXPORT_PATH.mat", true, true, true, false, false)
+            file = matopen(mat_filename, true, true, true, false, false)
             write(file, month, month_data)
             close(file)
             
